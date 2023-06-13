@@ -1,2 +1,2 @@
-# homepage
-flutter homepage app
+# Project Log
+Flutter app for practical practice
