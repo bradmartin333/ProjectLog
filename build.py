@@ -23,7 +23,7 @@ for file in files:
 os.chdir('flutter_app')
 
 # Build the Flutter app
-os.system('flutter build web')
+os.system('flutter build web --base-href /ProjectLog/')
 
 # Iterate through the files in the `build/web` directory
 for file in os.listdir('build/web'):
