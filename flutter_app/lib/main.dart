@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Size _size = Size.zero;
   final GlobalKey _key = GlobalKey();
 
-  void _getSize() {
+  void _getSize(_) {
     final RenderBox renderBox =
         _key.currentContext!.findRenderObject() as RenderBox;
     _size = renderBox.size;
@@ -74,10 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _afterLayout(_) {
-    _getSize();
-  }
-
   void _performTap() {
     setState(() {
       _counter++;
@@ -100,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+    WidgetsBinding.instance.addPostFrameCallback(_getSize);
     super.initState();
   }
 
@@ -111,6 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         title: Text(widget.title),
+        leading: IconButton(
+          icon: const Icon(Icons.home_filled),
+          onPressed: () => Get.toNamed('/'),
+        ),
       ),
       body: Stack(
         alignment: Alignment.center,
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onHover: (event) => setState(() => {
                     if (!context.isPhone)
                       {
-                        _getSize(),
+                        _getSize(null),
                         _x = event.localPosition.dy - _size.width / 2,
                         _y = event.localPosition.dx - _size.height / 2,
                         _x = _x / (_size.width / 200),
