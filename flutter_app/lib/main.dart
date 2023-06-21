@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Size _size = Size.zero;
   final GlobalKey _key = GlobalKey();
 
-  void _getSize() {
+  void _getSize(_) {
     final RenderBox renderBox =
         _key.currentContext!.findRenderObject() as RenderBox;
     _size = renderBox.size;
@@ -74,10 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _afterLayout(_) {
-    _getSize();
-  }
-
   void _performTap() {
     setState(() {
       _counter++;
@@ -100,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+    WidgetsBinding.instance.addPostFrameCallback(_getSize);
     super.initState();
   }
 
@@ -111,6 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         title: Text(widget.title),
+        leading: IconButton(
+          icon: const Icon(Icons.home_filled),
+          onPressed: () => Get.toNamed('/'),
+        ),
       ),
       body: Stack(
         alignment: Alignment.center,
@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
             image: const AssetImage('lib/images/background.jpg'),
             height: double.maxFinite,
             width: double.maxFinite,
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.cover,
             color: Color.fromARGB(_tapshadow.toInt() * 5, 0, 0, 0),
             colorBlendMode: BlendMode.saturation,
           ),
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onHover: (event) => setState(() => {
                     if (!context.isPhone)
                       {
-                        _getSize(),
+                        _getSize(null),
                         _x = event.localPosition.dy - _size.width / 2,
                         _y = event.localPosition.dx - _size.height / 2,
                         _x = _x / (_size.width / 200),
@@ -163,19 +163,20 @@ class _MyHomePageState extends State<MyHomePage> {
                         MediaQuery.of(context).size.shortestSide * 0.1),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color.fromARGB(255, 153, 235, 194),
+                        color: Color.fromARGB(
+                            200, 0, 255, _tapshadow.toInt() * 3 + 100),
                         blurRadius: 20,
                         offset: Offset(-_y / 2, -_x / 2),
                         spreadRadius: _tapshadow,
                       ),
                     ],
-                    color: const Color.fromARGB(62, 33, 149, 243),
+                    color: const Color.fromARGB(100, 33, 194, 243),
                   ),
                   child: Center(
                     child: Text(
                       '$_counter',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineLarge,
+                      style: Theme.of(context).textTheme.displayLarge,
                     ),
                   ),
                 ),
