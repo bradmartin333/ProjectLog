@@ -107,76 +107,74 @@ class _MyHomePageState extends State<MyHomePage> {
         foregroundColor: Colors.white,
         title: Text(widget.title),
       ),
-      body: GestureDetector(
-        onTapDown: (_) => _performTap(),
-        onTapUp: (_) => _relieveTap(),
-        onVerticalDragUpdate: (details) => _getDragPosition(details),
-        onHorizontalDragUpdate: (details) => _getDragPosition(details),
-        onVerticalDragEnd: (details) => _endDrag(details),
-        onHorizontalDragEnd: (details) => _endDrag(details),
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('lib/images/background.jpg'),
-              fit: BoxFit.cover,
-            ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Image(
+            image: const AssetImage('lib/images/background.jpg'),
+            height: double.maxFinite,
+            width: double.maxFinite,
+            fit: BoxFit.fitHeight,
+            color: Color.fromARGB(_tapshadow.toInt() * 5, 0, 0, 0),
+            colorBlendMode: BlendMode.saturation,
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                MouseRegion(
-                  key: _key,
-                  cursor: SystemMouseCursors.click,
-                  onHover: (event) => setState(() => {
-                        if (!context.isPhone)
-                          {
-                            _getSize(),
-                            _x = event.localPosition.dy - _size.width / 2,
-                            _y = event.localPosition.dx - _size.height / 2,
-                            _x = _x / (_size.width / 200),
-                            _y = _y / (_size.height / 200),
-                          }
-                      }),
-                  onExit: (event) => setState(() => {
-                        _x = 0,
-                        _y = 0,
-                      }),
-                  child: Transform(
-                    transform: Matrix4.identity()
-                      ..rotateX(_x * -0.01)
-                      ..rotateY(_y * 0.01),
-                    alignment: FractionalOffset.center,
-                    child: Container(
-                      height: MediaQuery.of(context).size.shortestSide * 0.5,
-                      width: MediaQuery.of(context).size.shortestSide * 0.5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.shortestSide * 0.1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color.fromARGB(255, 153, 235, 194),
-                            blurRadius: 20,
-                            offset: Offset(-_y / 2, -_x / 2),
-                            spreadRadius: _tapshadow,
-                          ),
-                        ],
-                        color: const Color.fromARGB(62, 33, 149, 243),
+          GestureDetector(
+            onTapDown: (_) => _performTap(),
+            onTapUp: (_) => _relieveTap(),
+            onVerticalDragUpdate: (details) => _getDragPosition(details),
+            onHorizontalDragUpdate: (details) => _getDragPosition(details),
+            onVerticalDragEnd: (details) => _endDrag(details),
+            onHorizontalDragEnd: (details) => _endDrag(details),
+            child: MouseRegion(
+              key: _key,
+              cursor: SystemMouseCursors.click,
+              onHover: (event) => setState(() => {
+                    if (!context.isPhone)
+                      {
+                        _getSize(),
+                        _x = event.localPosition.dy - _size.width / 2,
+                        _y = event.localPosition.dx - _size.height / 2,
+                        _x = _x / (_size.width / 200),
+                        _y = _y / (_size.height / 200),
+                      }
+                  }),
+              onExit: (event) => setState(() => {
+                    _x = 0,
+                    _y = 0,
+                  }),
+              child: Transform(
+                transform: Matrix4.identity()
+                  ..rotateX(_x * -0.01)
+                  ..rotateY(_y * 0.01),
+                alignment: FractionalOffset.center,
+                child: Container(
+                  height: MediaQuery.of(context).size.shortestSide * 0.5,
+                  width: MediaQuery.of(context).size.shortestSide * 0.5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.shortestSide * 0.1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 153, 235, 194),
+                        blurRadius: 20,
+                        offset: Offset(-_y / 2, -_x / 2),
+                        spreadRadius: _tapshadow,
                       ),
-                      child: Center(
-                        child: Text(
-                          '$_counter',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                      ),
+                    ],
+                    color: const Color.fromARGB(62, 33, 149, 243),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$_counter',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineLarge,
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
