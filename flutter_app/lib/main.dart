@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,15 +33,31 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  double _x = pi;
+  double _y = pi;
+  Size _size = Size.zero;
+  GlobalKey _key = GlobalKey();
 
-  double x = 0;
-  double y = 0;
-  double z = 0;
+  void _getSizes() {
+    final RenderBox renderBox =
+        _key.currentContext!.findRenderObject() as RenderBox;
+    _size = renderBox.size;
+  }
+
+  void _afterLayout(_) {
+    _getSizes();
+  }
 
   void _incrementCounter() {
     setState(() {
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+    super.initState();
   }
 
   @override
@@ -54,37 +72,51 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text("18JUN2023", style: TextStyle(fontSize: 20.0)),
-            const SizedBox(height: 20.0),
-            Transform(
-              transform: Matrix4.identity()
-                ..rotateX(x)
-                ..rotateY(y)
-                ..rotateZ(z),
-              alignment: FractionalOffset.center,
-              child: GestureDetector(
-                onPanUpdate: (details) {
-                  setState(() {
-                    y = y - details.delta.dx / 100;
-                    x = x + details.delta.dy / 100;
-                  });
-                },
-                child: Container(
-                  height: 200.0,
-                  width: 200.0,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+            MouseRegion(
+              key: _key,
+              cursor: SystemMouseCursors.move,
+              onHover: (event) => setState(() => {
+                    _getSizes(),
+                    _x = -0.01 * (event.localPosition.dy - _size.width / 2),
+                    _y = 0.01 * (event.localPosition.dx - _size.height / 2),
+                    // Adjust the range of x and y from
+                    //[-(size.x/y * 0.005), (size.x/y * 0.005)] to [-1, 1]
+                    _x = _x / (_size.width / 200),
+                    _y = _y / (_size.height / 200),
+                  }),
+              onExit: (event) => setState(() => {
+                    _x = 0,
+                    _y = 0,
+                  }),
+              child: Transform(
+                transform: Matrix4.inverted(Matrix4.identity()
+                  ..rotateX(_x)
+                  ..rotateY(_y)),
+                alignment: FractionalOffset.center,
+                child: Material(
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 5.0,
-                    ),
                   ),
-                  child: Center(
-                    child: Text(
-                      '$_counter',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineLarge,
+                  elevation: 100,
+                  child: Container(
+                    height: 300.0,
+                    width: 300.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: RadialGradient(
+                        colors: [
+                          const Color.fromARGB(255, 153, 235, 194),
+                          Theme.of(context).colorScheme.primary,
+                        ],
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: Text(
+                        '$_counter',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
                     ),
                   ),
                 ),
