@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   double _tapshadow = 0;
+  final double _mindrag = -100.0;
+  final double _maxdrag = 100.0;
 
   double _x = pi;
   double _y = pi;
@@ -59,7 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
             {
               _x = _x / (_size.width / 200),
               _y = _y / (_size.height / 200),
-            }
+            },
+          _x = clampDouble(_x, _mindrag, _maxdrag),
+          _y = clampDouble(_y, _mindrag, _maxdrag),
         });
   }
 
@@ -121,6 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
           GestureDetector(
             onTapDown: (_) => _performTap(),
             onTapUp: (_) => _relieveTap(),
+            onTapCancel: () => _relieveTap(),
+            onLongPressEnd: (_) => _relieveTap(),
+            onForcePressEnd: (_) => _relieveTap(),
             onVerticalDragUpdate: (details) => _getDragPosition(details),
             onHorizontalDragUpdate: (details) => _getDragPosition(details),
             onVerticalDragEnd: (details) => _endDrag(details),
